@@ -1,5 +1,5 @@
 # Vertical Attention Network: an end-to-end model for handwritten text recognition at paragraph level.
-This repository is a public implementation of the paper: ""
+This repository is a public implementation of the paper: "End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network"
 
 It focuses on Optical Character Recognition (OCR) applied at line and paragraph levels.
 
@@ -61,19 +61,16 @@ The different splits are as follow:
 
 #### Download
 
-<ul>
-<li>Register at the [FKI's webpage](http://www.fki.inf.unibe.ch/DBs/iamDB/iLogin/index.php).
-<li>Download the dataset [here](https://fki.tic.heia-fr.ch/databases/download-the-iam-handwriting-database)</li>
-<li>Move the following files into the folder Datasets/raw/IAM/
-    <ul>
-        <li>formsA-D.tgz</li>
-        <li>formsE-H.tgz</li>
-        <li>formsI-Z.tgz</li>
-        <li>lines.tgz</li>
-        <li>ascii.tgz</li>
-    </ul>
-</li>
-</ul>
+
+
+- Register at the [FKI's webpage](http://www.fki.inf.unibe.ch/DBs/iamDB/iLogin/index.php)
+- Download the dataset [here](https://fki.tic.heia-fr.ch/databases/download-the-iam-handwriting-database) 
+- Move the following files into the folder Datasets/raw/IAM/
+    - formsA-D.tgz
+    - formsE-H.tgz
+    - formsI-Z.tgz
+    - lines.tgz
+    - ascii.tgz
 
 
 
@@ -91,19 +88,14 @@ The different splits are as follow:
 | paragraph |  1400 |     100    |  100 |
 
 #### Download
-<ul>
-<li>Fill in the a2ia user agreement form available [here](http://www.a2ialab.com/doku.php?id=rimes_database:start) and send it by email to rimesnda@a2ia.com. You will receive by mail a username and a password</li>
-<li>Login in and download the data from [here](http://www.a2ialab.com/doku.php?id=rimes_database:data:icdar2011:line:icdar2011competitionline)</li>
-<li>Move the following files into the folder Datasets/raw/RIMES/
-    <ul>
-        <li>eval_2011_annotated.xml</li>
-        <li>eval_2011_gray.tar</li>
-        <li>training_2011_gray.tar</li>
-        <li>training_2011.xml</li>
-    </ul>
-</li>
-</ul>
 
+- Fill in the a2ia user agreement form available [here](http://www.a2ialab.com/doku.php?id=rimes_database:start) and send it by email to rimesnda@a2ia.com. You will receive by mail a username and a password
+- Login in and download the data from [here](http://www.a2ialab.com/doku.php?id=rimes_database:data:icdar2011:line:icdar2011competitionline)
+- Move the following files into the folder Datasets/raw/RIMES/
+    - eval_2011_annotated.xml
+    - eval_2011_gray.tar
+    - training_2011_gray.tar
+    - training_2011.xml
 
 ### READ 2016
 
@@ -119,9 +111,7 @@ The different splits are as follow:
 
 #### Download
 
-<ul>
-<li>From root folder:</li>
-</ul>
+- From root folder:
 
 ```
 cd Datasets/raw
@@ -142,9 +132,7 @@ The dataset is split as follow:
 
 #### Download
 
-<ul>
-<li>From root folder:</li>
-</ul>
+- From root folder:
 
 ```
 cd Datasets/raw
@@ -157,9 +145,7 @@ wget http://openslr.magicdatatech.com/resources/84/scribblelens.{supplement.orig
 
 ### Format the datasets
 
-<ul>
-<li> Comment/Uncomment the following lines from the main function of the script "format_datasets.py" according to your needs and run it</li>
-</ul>
+- Comment/Uncomment the following lines from the main function of the script "format_datasets.py" according to your needs and run it
 
 ```
 if __name__ == "__main__":
@@ -176,12 +162,10 @@ if __name__ == "__main__":
     # format_scribblelens_line()
 ```
 
-<ul>
-<li>This will generate well-formated datasets, usable by the training scripts.</li>
-</ul>
+- This will generate well-formated datasets, usable by the training scripts.
 
 
-## Training and evaluation
+## Training And Evaluation
 You need to have a properly formatted dataset to train a model, please refer to the section [Datasets](#Datasets). 
 
 Two scripts are provided to train respectively line and paragraph level models: OCR/line_OCR/ctc/main_line_ctc.py and OCR/document_OCR/v_attention/main_pg_va.py
