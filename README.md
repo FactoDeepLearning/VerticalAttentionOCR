@@ -22,9 +22,9 @@ For the paragraph level, here are the results:
 
 
 Table of contents:
-1. [Getting Started](#Getting Started)
+1. [Getting Started](#Getting-Started)
 2. [Datasets](#Datasets)
-3. [Training And Evaluation](#Training)
+3. [Training And Evaluation](#Training-and-evaluation)
 
 ## Getting Started
 Implementation has been tested with Python 3.6.
