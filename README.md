@@ -1,5 +1,7 @@
 # Vertical Attention Network: an end-to-end model for handwritten text recognition at paragraph level.
-This repository is a public implementation of the paper: "End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network"
+This repository is a public implementation of the paper: "End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network".
+
+The paper is available at https://arxiv.org/abs/2012.03868
 
 It focuses on Optical Character Recognition (OCR) applied at line and paragraph levels.
 
@@ -183,8 +185,6 @@ All hyperparameters are specified and editable in the training scripts (meaning 
 Evaluation is performed just after training ending (training is stopped when the maximum elapsed time is reached or after a maximum number of epoch as specified in the training script)
 
 ## Citation
-
-Paper available at https://arxiv.org/abs/2012.03868
 
 ```bibtex
 @misc{coquenet2020,
