@@ -183,3 +183,17 @@ All hyperparameters are specified and editable in the training scripts (meaning 
 Evaluation is performed just after training ending (training is stopped when the maximum elapsed time is reached or after a maximum number of epoch as specified in the training script)
 
 ## Citation
+
+Paper available at https://arxiv.org/abs/2012.03868
+
+```bibtex
+@misc{coquenet2020,
+      title={End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network}, 
+      author={Denis Coquenet and Clément Chatelain and Thierry Paquet},
+      year={2020},
+      eprint={2012.03868},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
+
