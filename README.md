@@ -22,7 +22,7 @@ For the paragraph level, here are the results:
 |     RIMES    | 1.90 | 8.83 |
 |   READ2016   | 3.63 | 16.75 |
 
-Pretrained model weights are available [here](https://git.litislab.fr/dcoquenet/linepytorchocr) 
+Pretrained model weights are available [here](https://git.litislab.fr/dcoquenet/VerticalAttentionNetwork) 
 
 Table of contents:
 1. [Getting Started](#Getting-Started)
