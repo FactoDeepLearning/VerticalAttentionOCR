@@ -124,7 +124,7 @@ if __name__ == "__main__":
             "use_ddp": False,  # Use DistributedDataParallel
             "use_apex": True,  # Enable mix-precision with apex package
             "nb_gpu": torch.cuda.device_count(),
-            "batch_size": 4,  # mini-batch size per GPU
+            "batch_size": 16,  # mini-batch size per GPU
             "optimizer": {
                 "class": Adam,
                 "args": {
