@@ -86,6 +86,8 @@ class VerticalAttention(nn.Module):
                 cat.append(torch.clamp(coverage_vector, 0, 1))
             else:
                 cat.append(coverage_vector)
+                
+        sum += self.dropout(self.dense_enc(self.h_features.permute(0, 2, 1)))
 
         cat = torch.cat([c.unsqueeze(1) for c in cat], dim=1)
         cat = self.norm(cat)
