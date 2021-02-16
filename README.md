@@ -199,4 +199,4 @@ Evaluation is performed just after training ending (training is stopped when the
 
 ## License
 
-This whole project is under Licence Cecill-C EXCEPT FOR the file "basic/transforms.py" which is under license MIT.
+This whole project is under Cecill-C license EXCEPT FOR the file "basic/transforms.py" which is under MIT license.
