@@ -107,7 +107,7 @@ class VerticalAttention(nn.Module):
 
         b, c, h, w = features.size()
         device = features.device
-        sum = torch.zeros((b, h, self.att_fc_size)).type(features.type()).to(device)
+        sum = torch.zeros((b, h, self.att_fc_size), dtype=features.dtype, device=device)
         cat = list()
 
         if self.use_location:

@@ -48,7 +48,7 @@ class Manager(GenericTrainingManager):
     def get_init_hidden(self, batch_size):
         num_layers = self.params["model_params"]["nb_layers_decoder"]
         hidden_size = self.params["model_params"]["hidden_size"]
-        return torch.zeros(num_layers, batch_size, hidden_size), torch.zeros(num_layers, batch_size, hidden_size)
+        return torch.zeros((num_layers, batch_size, hidden_size), device=self.device), torch.zeros((num_layers, batch_size, hidden_size), device=self.device)
 
     def train_batch(self, batch_data, metric_names):
         loss_ctc_func = CTCLoss(blank=self.dataset.tokens["blank"], reduction="sum")
@@ -73,9 +73,9 @@ class Manager(GenericTrainingManager):
         status = "init"
         features = self.models["encoder"](x)
         batch_size, c, h, w = features.size()
-        attention_weights = torch.zeros((batch_size, h)).float().to(self.device)
+        attention_weights = torch.zeros((batch_size, h), dtype=torch.float, device=self.device)
         coverage = attention_weights.clone() if self.params["model_params"]["use_coverage_vector"] else None
-        hidden = [k.to(self.device) for k in self.get_init_hidden(batch_size)] if self.params["model_params"]["use_hidden"] else None
+        hidden = [k for k in self.get_init_hidden(batch_size)] if self.params["model_params"]["use_hidden"] else None
 
         line_preds = [list() for _ in range(batch_size)]
         for i in range(max_nb_lines):
@@ -89,7 +89,7 @@ class Manager(GenericTrainingManager):
             total_loss_ctc += loss_ctc.item()
             global_loss += loss_ctc
             if self.params["training_params"]["stop_mode"] == "learned":
-                gt_decision = torch.ones((batch_size, )).to(self.device).long()
+                gt_decision = torch.ones((batch_size, ), device=self.device, dtype=torch.long)
                 for j in range(batch_size):
                     if y_len[i][j] == 0:
                         if i > 0 and y_len[i-1][j] == 0:
@@ -130,9 +130,9 @@ class Manager(GenericTrainingManager):
         max_nb_lines = self.params["training_params"]["max_pred_lines"]
         features = self.models["encoder"](x)
         batch_size, c, h, w = features.size()
-        attention_weights = torch.zeros((batch_size, h)).float().to(self.device)
+        attention_weights = torch.zeros((batch_size, h), device=self.device, dtype=torch.float)
         coverage = attention_weights.clone() if self.params["model_params"]["use_coverage_vector"] else None
-        hidden = [k.to(self.device) for k in self.get_init_hidden(batch_size)] if self.params["model_params"]["use_hidden"] else None
+        hidden = [k for k in self.get_init_hidden(batch_size)] if self.params["model_params"]["use_hidden"] else None
         preds = [list() for _ in range(batch_size)]
         end_pred = [None for _ in range(batch_size)]
 
@@ -155,7 +155,7 @@ class Manager(GenericTrainingManager):
                 line_pred = [torch.argmax(lp, dim=0).detach().cpu().numpy()[:x_reduced_len[j]] for j, lp in enumerate(probs)]
                 preds = append_preds(preds, line_pred)
             ind_pred = torch.argmax(probs, dim=1)
-            if torch.equal(ind_pred, torch.ones(ind_pred.size()).to(self.device).long()*self.dataset.tokens["blank"]):
+            if torch.equal(ind_pred, torch.ones(ind_pred.size(), device=self.device, dtype=torch.long)*self.dataset.tokens["blank"]):
                 break
 
         metrics = self.compute_metrics(preds, batch_data["raw_labels"], metric_names, from_line=True)
