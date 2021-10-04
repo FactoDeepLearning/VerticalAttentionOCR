@@ -66,7 +66,7 @@ class Manager(GenericTrainingManager):
         batch_size = y[0].size()[0]
 
         max_nb_lines = len(y)
-        for i in range(len(y), max_nb_lines):
+        for i in range(len(y), max_nb_lines+1):
             y.append(torch.ones((batch_size, 1)).long().to(self.device)*self.dataset.tokens["pad"])
             y_len.append([0 for _ in range(batch_size)])
 
@@ -78,16 +78,17 @@ class Manager(GenericTrainingManager):
         hidden = [k for k in self.get_init_hidden(batch_size)] if self.params["model_params"]["use_hidden"] else None
 
         line_preds = [list() for _ in range(batch_size)]
-        for i in range(max_nb_lines):
+        for i in range(max_nb_lines+1):
             context_vector, attention_weights, decision = self.models["attention"](features, attention_weights, coverage, hidden, status=status)
-            coverage = coverage + attention_weights if self.params["model_params"]["use_coverage_vector"] else None
-            probs, hidden = self.models["decoder"](context_vector, hidden)
             status = "inprogress"
-
-            loss_ctc = loss_ctc_func(probs.permute(2, 0, 1), y[i], x_reduced_len, y_len[i])
-
-            total_loss_ctc += loss_ctc.item()
-            global_loss += loss_ctc
+            coverage = coverage + attention_weights if self.params["model_params"]["use_coverage_vector"] else None
+            
+            if i < max_nb_lines:
+                probs, hidden = self.models["decoder"](context_vector, hidden)
+                loss_ctc = loss_ctc_func(probs.permute(2, 0, 1), y[i], x_reduced_len, y_len[i])
+                total_loss_ctc += loss_ctc.item()
+                global_loss += loss_ctc
+            
             if self.params["training_params"]["stop_mode"] == "learned":
                 gt_decision = torch.ones((batch_size, ), device=self.device, dtype=torch.long)
                 for j in range(batch_size):
