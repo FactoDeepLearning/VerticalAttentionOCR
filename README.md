@@ -9,18 +9,17 @@ We obtained the following results at line level:
 
 |  Dataset  |  cer |  wer  |
 |:------------:|:----:|:-----:|
-|      IAM     | 4.95 | 18.73 |
-|     RIMES    | 3.19 | 10.25 |
-|   READ2016   | 4.28 | 19.71 |
-| ScribbleLens | 6.66 | 25.12 |
+|      IAM     | 4.97 | 16.31 |
+|     RIMES    | 3.08 | 8.14 |
+|   READ2016   | 4.10 | 16.29 |
 
 For the paragraph level, here are the results:
 
 | Dataset  |  cer |  wer  |
 |:------------:|:----:|:-----:|
-|      IAM     | 4.32 | 16.24 |
-|     RIMES    | 1.90 | 8.83 |
-|   READ2016   | 3.63 | 16.75 |
+|      IAM     | 4.45 | 14.55 |
+|     RIMES    | 1.91 | 6.72 |
+|   READ2016   | 3.59 | 13.94 |
 
 Pretrained model weights are available [here](https://git.litislab.fr/dcoquenet/VerticalAttentionNetwork) 
 
@@ -66,7 +65,7 @@ The different splits are as follow:
 
 
 
-- Register at the [FKI's webpage](http://www.fki.inf.unibe.ch/DBs/iamDB/iLogin/index.php)
+- Register at the [FKI's webpage](https://fki.tic.heia-fr.ch/databases/iam-handwriting-database)
 - Download the dataset [here](https://fki.tic.heia-fr.ch/databases/download-the-iam-handwriting-database) 
 - Move the following files into the folder Datasets/raw/IAM/
     - formsA-D.tgz

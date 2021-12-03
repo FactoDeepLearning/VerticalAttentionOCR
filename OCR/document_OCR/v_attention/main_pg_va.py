@@ -57,7 +57,7 @@ def train_and_test(rank, params):
     # compute metrics on train, valid and test sets (in eval conditions)
     metrics = ["cer", "wer", "diff_len", "time", "worst_cer"]
     for dataset_name in params["dataset_params"]["datasets"].keys():
-        for set_name in ["train", "valid", "test"]:
+        for set_name in ["test", "valid", "train"]:
             model.predict("{}-{}".format(dataset_name, set_name), [(dataset_name, set_name), ], metrics, output=True)
 
 
@@ -184,9 +184,9 @@ if __name__ == "__main__":
         },
 
         "training_params": {
-            "output_folder": "iam",  # folder names for logs and weigths
+            "output_folder": "van_iam_paragraph_learned_stop",  # folder names for logs and weigths
             "max_nb_epochs": 5000,  # max number of epochs for the training
-            "max_training_time": 3600 * (24 + 22),  # max training time limit (in seconds)
+            "max_training_time": 3600 * (24 + 23),  # max training time limit (in seconds)
             "load_epoch": "best",  # ["best", "last"], to load weights from best epoch or last trained epoch
             "interval_save_weights": None,  # None: keep best and last only
             "batch_size": 8,  # mini-batch size per GPU
@@ -210,7 +210,7 @@ if __name__ == "__main__":
             "eval_metrics": ["cer", "wer", "diff_len"],  # Metrics name for evaluation on validation set during training
             "force_cpu": False,  # True for debug purposes to run on cpu only
             "max_pred_lines": 30,  # Maximum number of line predictions at evaluation time
-            "stop_mode": "learned",  # ["fixed", "learned"]
+            "stop_mode": "learned",  # ["fixed", "early", "learned"]
 
         },
 

@@ -35,6 +35,7 @@
 from basic.generic_training_manager import GenericTrainingManager
 from basic.utils import edit_wer_from_list, nb_words_from_list, nb_chars_from_list, LM_ind_to_str
 import editdistance
+import re
 import torch
 from torch.nn import CTCLoss
 
@@ -96,6 +97,7 @@ class TrainerLineCTC(GenericTrainingManager):
         ind_x = [self.ctc_remove_successives_identical_ind(t) for t in ind_x]
         str_x = [LM_ind_to_str(self.dataset.charset, t, oov_symbol="") for t in ind_x]
         str_y = [LM_ind_to_str(self.dataset.charset, t) for t in ind_y]
+        str_x = [re.sub("( )+", ' ', t).strip(" ") for t in str_x]
         metrics = dict()
         for metric_name in metric_names:
             if metric_name == "cer":

@@ -107,6 +107,11 @@ class DatasetManager:
             charset.remove("")
         return sorted(list(charset))
 
+    def update_dataset(self, dataset):
+        dataset.charset = self.charset
+        dataset.tokens = self.tokens
+        dataset.convert_labels()
+
     def load_datasets(self):
         self.train_dataset = self.dataset_class(self.params, "train", self.params["train"]["name"], self.get_paths_and_sets("train", self.params["train"]["datasets"]))
         self.params["config"]["mean"], self.params["config"]["std"] = self.train_dataset.compute_std_mean()
@@ -119,9 +124,7 @@ class DatasetManager:
         self.train_dataset.tokens = self.tokens
         self.train_dataset.convert_labels()
         for key in self.valid_datasets:
-            self.valid_datasets[key].charset = self.charset
-            self.valid_datasets[key].tokens = self.tokens
-            self.valid_datasets[key].convert_labels()
+            self.update_dataset(self.valid_datasets[key])
 
     def load_ddp_samplers(self):
         if self.params["use_ddp"]:
@@ -156,9 +159,7 @@ class DatasetManager:
             })
         self.test_datasets[custom_name] = self.dataset_class(self.params, "test", custom_name, paths_and_sets)
         if self.dataset_class is OCRDataset:
-            self.test_datasets[custom_name].charset = self.charset
-            self.test_datasets[custom_name].tokens = self.tokens
-            self.test_datasets[custom_name].convert_labels()
+            self.update_dataset(self.test_datasets[custom_name])
         self.test_samplers[custom_name] = DistributedSampler(self.test_datasets[custom_name],
                                                              num_replicas=self.params["num_gpu"],
                                                              rank=self.params["ddp_rank"], shuffle=False) \
@@ -379,20 +380,21 @@ class OCRDataset(GenericDataset):
         sample["img_reduced_shape"] = np.floor(sample["img_shape"] / self.reduce_dims_factor).astype(int)
 
         # Padding to handle CTC requirements
-        max_label_len = 0
-        height = 1
-        if "CTC_line" in self.params["config"]["constraints"]:
-            max_label_len = sample["label_len"]
-        if "CTC_va" in self.params["config"]["constraints"]:
-            max_label_len = max(sample["line_label_len"])
-        if "CTC_pg" in self.params["config"]["constraints"]:
-            max_label_len = sample["label_len"]
-            height = max(sample["img_reduced_shape"][0], 1)
-        if 2 * max_label_len + 1 > sample["img_reduced_shape"][1]*height:
-            sample["img"] = pad_image_width_right(sample["img"], int(np.ceil((2 * max_label_len + 1) / height) * self.reduce_dims_factor[1]), self.padding_value)
-            sample["img_shape"] = sample["img"].shape
-            sample["img_reduced_shape"] = np.floor(sample["img_shape"] / self.reduce_dims_factor).astype(int)
-        sample["img_reduced_shape"] = [max(1, t) for t in sample["img_reduced_shape"]]
+        if self.set_name == "train":
+            max_label_len = 0
+            height = 1
+            if "CTC_line" in self.params["config"]["constraints"]:
+                max_label_len = sample["label_len"]
+            if "CTC_va" in self.params["config"]["constraints"]:
+                max_label_len = max(sample["line_label_len"])
+            if "CTC_pg" in self.params["config"]["constraints"]:
+                max_label_len = sample["label_len"]
+                height = max(sample["img_reduced_shape"][0], 1)
+            if 2 * max_label_len + 1 > sample["img_reduced_shape"][1]*height:
+                sample["img"] = pad_image_width_right(sample["img"], int(np.ceil((2 * max_label_len + 1) / height) * self.reduce_dims_factor[1]), self.padding_value)
+                sample["img_shape"] = sample["img"].shape
+                sample["img_reduced_shape"] = np.floor(sample["img_shape"] / self.reduce_dims_factor).astype(int)
+            sample["img_reduced_shape"] = [max(1, t) for t in sample["img_reduced_shape"]]
 
         # Padding constraints to handle model needs
         if "padding" in self.params["config"]["constraints"]:

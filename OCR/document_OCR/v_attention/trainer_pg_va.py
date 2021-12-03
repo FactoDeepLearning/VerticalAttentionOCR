@@ -35,9 +35,10 @@
 from basic.generic_training_manager import GenericTrainingManager
 from torch.nn import CrossEntropyLoss, CTCLoss
 import torch
-from basic.utils import edit_cer_from_list, edit_wer_from_list, nb_chars_from_list, nb_words_from_list, LM_ind_to_str
+from basic.utils import edit_wer_from_list, nb_chars_from_list, nb_words_from_list, LM_ind_to_str
 import numpy as np
 import editdistance
+import re
 
 
 class Manager(GenericTrainingManager):
@@ -65,9 +66,11 @@ class Manager(GenericTrainingManager):
 
         batch_size = y[0].size()[0]
 
-        max_nb_lines = len(y)
-        for i in range(len(y), max_nb_lines+1):
-            y.append(torch.ones((batch_size, 1)).long().to(self.device)*self.dataset.tokens["pad"])
+        mode = self.params["training_params"]["stop_mode"]
+        max_nb_lines = self.params["training_params"]["max_pred_lines"] if mode == "fixed" else len(y)
+        num_iter = max_nb_lines if mode == "fixed" else max_nb_lines+1
+        for i in range(len(y), num_iter):
+            y.append(torch.ones((batch_size, 1), dtype=torch.long , device=self.device)*self.dataset.tokens["pad"])
             y_len.append([0 for _ in range(batch_size)])
 
         status = "init"
@@ -78,18 +81,18 @@ class Manager(GenericTrainingManager):
         hidden = [k for k in self.get_init_hidden(batch_size)] if self.params["model_params"]["use_hidden"] else None
 
         line_preds = [list() for _ in range(batch_size)]
-        for i in range(max_nb_lines+1):
+        for i in range(num_iter):
             context_vector, attention_weights, decision = self.models["attention"](features, attention_weights, coverage, hidden, status=status)
             status = "inprogress"
             coverage = coverage + attention_weights if self.params["model_params"]["use_coverage_vector"] else None
             
-            if i < max_nb_lines:
+            if mode in ["fixed", "early"] or i < max_nb_lines:
                 probs, hidden = self.models["decoder"](context_vector, hidden)
                 loss_ctc = loss_ctc_func(probs.permute(2, 0, 1), y[i], x_reduced_len, y_len[i])
                 total_loss_ctc += loss_ctc.item()
                 global_loss += loss_ctc
             
-            if self.params["training_params"]["stop_mode"] == "learned":
+            if mode == "learned":
                 gt_decision = torch.ones((batch_size, ), device=self.device, dtype=torch.long)
                 for j in range(batch_size):
                     if y_len[i][j] == 0:
@@ -128,6 +131,7 @@ class Manager(GenericTrainingManager):
         x_reduced_len = [s[1] for s in batch_data["imgs_reduced_shape"]]
 
         status = "init"
+        mode = self.params["training_params"]["stop_mode"]
         max_nb_lines = self.params["training_params"]["max_pred_lines"]
         features = self.models["encoder"](x)
         batch_size, c, h, w = features.size()
@@ -143,20 +147,20 @@ class Manager(GenericTrainingManager):
             probs, hidden = self.models["decoder"](context_vector, hidden)
             status = "inprogress"
 
-            if self.params["training_params"]["stop_mode"] == "learned":
+            line_pred = [torch.argmax(lp, dim=0).detach().cpu().numpy()[:x_reduced_len[j]] for j, lp in enumerate(probs)]
+            if mode == "learned":
                 decision = [torch.argmax(d, dim=0) for d in decision]
                 for k, d in enumerate(decision):
                     if d == 0 and end_pred[k] is None:
                         end_pred[k] = i
-                line_pred = [torch.argmax(lp, dim=0).detach().cpu().numpy()[:x_reduced_len[j]] if end_pred[j] is None else None for j, lp in enumerate(probs)]
-                preds = append_preds(preds, line_pred)
-                if np.all([end_pred[k] is not None for k in range(batch_size)]):
-                    break
-            else:
-                line_pred = [torch.argmax(lp, dim=0).detach().cpu().numpy()[:x_reduced_len[j]] for j, lp in enumerate(probs)]
-                preds = append_preds(preds, line_pred)
-            ind_pred = torch.argmax(probs, dim=1)
-            if torch.equal(ind_pred, torch.ones(ind_pred.size(), device=self.device, dtype=torch.long)*self.dataset.tokens["blank"]):
+
+            if mode in ["learned", "early"]:
+                for k, p in enumerate(line_pred):
+                    if end_pred[k] is None and np.all(p == self.dataset.tokens["blank"]):
+                        end_pred[k] = i
+            line_pred = [l if end_pred[j] is None else None for j, l in enumerate(line_pred)]
+            preds = append_preds(preds, line_pred)
+            if np.all([end_pred[k] is not None for k in range(batch_size)]):
                 break
 
         metrics = self.compute_metrics(preds, batch_data["raw_labels"], metric_names, from_line=True)
@@ -178,7 +182,8 @@ class Manager(GenericTrainingManager):
         if from_line:
             str_x = list()
             for lines_token in ind_x:
-                str_x.append(" ".join([LM_ind_to_str(self.dataset.charset, self.ctc_remove_successives_identical_ind(p), oov_symbol="") if p is not None else "" for p in lines_token]).strip(" "))
+                list_str = [LM_ind_to_str(self.dataset.charset, self.ctc_remove_successives_identical_ind(p), oov_symbol="") if p is not None else "" for p in lines_token]
+                str_x.append(re.sub("( )+", ' ', " ".join(list_str).strip(" ")))
         else:
             str_x = [LM_ind_to_str(self.dataset.charset, self.ctc_remove_successives_identical_ind(p), oov_symbol="") if p is not None else "" for p in ind_x]
         metrics = dict()
