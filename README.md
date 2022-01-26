@@ -122,28 +122,6 @@ cd READ_2016
 wget https://zenodo.org/record/1164045/files/{Test-ICFHR-2016.tgz,Train-And-Val-ICFHR-2016.tgz}
 ```
 
-### ScribbleLens
-
-#### Details
-ScribbleLens corresponds to Early Modern Deutch RGB handwriting images.
-The dataset is split as follow:
-
-|           | train | validation |  test |
-|:---------:|:-----:|:----------:|:-----:|
-|    line   | 4,302 |  481    | 563|
-
-#### Download
-
-- From root folder:
-
-```
-cd Datasets/raw
-mkdir ScribbleLens
-cd ScribbleLens
-wget http://openslr.magicdatatech.com/resources/84/scribblelens.{supplement.original.pages.tgz,corpus.v1.2.zip}
-
-```
-
 
 ### Format the datasets
 
