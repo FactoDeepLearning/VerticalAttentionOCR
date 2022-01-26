@@ -511,81 +511,6 @@ def format_READ2016_paragraph():
         }, f)
 
 
-def format_scribblelens_line():
-    """
-    Format the ScribbeLens dataset at line level with the following split : 4,302 for training, 481 for validation and 563 for test)
-    """
-    source_folder = "raw/ScribbleLens"
-    target_folder = "formatted/ScribbleLens_lines"
-    os.makedirs(target_folder)
-
-    tar_filenames = ["scribblelens.corpus.v1.2.zip", ]
-    tar_paths = [os.path.join(source_folder, name) for name in tar_filenames]
-    for tar_path in tar_paths:
-        if not os.path.isfile(tar_path):
-            print("error - {} not found".format(tar_path))
-            exit(-1)
-        tar = zipfile.ZipFile(tar_path)
-        tar.extractall(target_folder)
-        tar.close()
-
-    train_name_path = os.path.join(target_folder, "scribblelens.corpus.v1", "corpora", "nl.color.lines.train.dat")
-    test_name_path = os.path.join(target_folder, "scribblelens.corpus.v1", "corpora", "nl.color.lines.test.dat")
-    # test_name_path = os.path.join(target_folder, "scribblelens.corpus.v1", "corpora", "nl.color.lines.tasman.test.dat")
-
-    with open(train_name_path, "r") as f:
-        train_paths = [l.strip("\n").split(" ") for l in f.readlines()]
-    train_by_set = dict()
-    for l in train_paths:
-        set_name = l[0].split("/")[1]
-        if set_name not in train_by_set.keys():
-            train_by_set[set_name] = list()
-        train_by_set[set_name].append(l)
-    all_paths = {
-        "train":  list(),
-        "valid": list(),
-        "test": list(),
-    }
-    for key in train_by_set.keys():
-        paths = train_by_set[key]
-        train_len = int(len(paths) * 0.9)
-        all_paths["train"].extend(paths[:train_len])
-        all_paths["valid"].extend(paths[train_len:])
-    with open(test_name_path, "r") as f:
-        all_paths["test"] = [l.strip("\n").split(" ") for l in f.readlines()]
-
-    gt = {
-        "train": dict(),
-        "valid": dict(),
-        "test": dict()
-    }
-
-    charset = set()
-    for set_name in ["train", "valid", "test"]:
-        set_path = os.path.join(target_folder, set_name)
-        os.makedirs(set_path, exist_ok=True)
-        i = 0
-        for img_rel_path, label_rel_path in all_paths[set_name]:
-            img_path = os.path.join(target_folder, "scribblelens.corpus.v1", img_rel_path)
-            label_path = os.path.join(target_folder, "scribblelens.corpus.v1", label_rel_path)
-            with open(label_path, "r") as f:
-                label = f.readline().strip("\n")
-            ext = img_path.split(".")[-1]
-            new_img_name = "{}.{}".format(i, ext)
-            new_img_path = os.path.join(set_path, new_img_name)
-            os.replace(img_path, new_img_path)
-            gt[set_name][new_img_name] = {"text": label, }
-            charset = charset.union(label)
-            i += 1
-    shutil.rmtree(os.path.join(target_folder, "scribblelens.corpus.v1"))
-
-    with open(os.path.join(target_folder, "labels.pkl"), "wb") as f:
-        pickle.dump({
-            "ground_truth": gt,
-            "charset": sorted(list(charset)),
-        }, f)
-
-
 if __name__ == "__main__":
 
     format_IAM_line()
@@ -597,4 +522,3 @@ if __name__ == "__main__":
     # format_READ2016_line()
     # format_READ2016_paragraph()
 
-    # format_scribblelens_line()
