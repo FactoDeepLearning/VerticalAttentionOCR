@@ -138,8 +138,6 @@ if __name__ == "__main__":
 
     # format_READ2016_line()
     # format_READ2016_paragraph()
-
-    # format_scribblelens_line()
 ```
 
 - This will generate well-formated datasets, usable by the training scripts.
