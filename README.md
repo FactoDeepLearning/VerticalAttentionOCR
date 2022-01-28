@@ -5,6 +5,8 @@ To discover my other works, here is my [academic page](https://factodeeplearning
 
 The paper is available at https://arxiv.org/abs/2012.03868.
 
+[![Click to see demo](https://img.youtube.com/vi/OXi1birmbuw/0.jpg)](https://www.youtube.com/watch?v=OXi1birmbuw)
+
 It focuses on Optical Character Recognition (OCR) applied at line and paragraph levels.
 
 We obtained the following results at line level:
