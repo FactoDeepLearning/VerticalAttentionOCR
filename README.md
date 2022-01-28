@@ -1,7 +1,9 @@
 # Vertical Attention Network: an end-to-end model for handwritten text recognition at paragraph level.
 This repository is a public implementation of the paper: "End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network".
 
-The paper is available at https://arxiv.org/abs/2012.03868
+To discover my other works, here is my [academic page](https://factodeeplearning.github.io/).
+
+The paper is available at https://arxiv.org/abs/2012.03868.
 
 It focuses on Optical Character Recognition (OCR) applied at line and paragraph levels.
 
@@ -21,7 +23,7 @@ For the paragraph level, here are the results:
 |     RIMES    | 1.91 | 6.72 |
 |   READ2016   | 3.59 | 13.94 |
 
-Pretrained model weights are available [here](https://git.litislab.fr/dcoquenet/VerticalAttentionNetwork) 
+Pretrained model weights are available [here](https://git.litislab.fr/dcoquenet/VerticalAttentionNetwork).
 
 Table of contents:
 1. [Getting Started](#Getting-Started)
@@ -162,13 +164,12 @@ Evaluation is performed just after training ending (training is stopped when the
 ## Citation
 
 ```bibtex
-@misc{coquenet2020,
-      title={End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network}, 
-      author={Denis Coquenet and Clément Chatelain and Thierry Paquet},
-      year={2020},
-      eprint={2012.03868},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@ARTICLE{Coquenet2022,
+    author={Coquenet, Denis and Chatelain, Clement and Paquet, Thierry},
+    journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+    title={End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network},
+    year={2022},
+    doi={10.1109/TPAMI.2022.3144899}
 }
 ```
 
