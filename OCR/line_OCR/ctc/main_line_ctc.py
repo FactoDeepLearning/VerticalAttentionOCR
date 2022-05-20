@@ -163,7 +163,7 @@ if __name__ == "__main__":
                 "class": Adam,
                 "args": {
                     "lr": 0.0001,
-                    "amsgrad": True,
+                    "amsgrad": False,
                 }
             },
             "eval_on_valid": True,  # Whether to eval and logs metrics on validation set during training or not
