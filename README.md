@@ -25,7 +25,7 @@ For the paragraph level, here are the results:
 |     RIMES    | 1.91 | 6.72 |
 |   READ2016   | 3.59 | 13.94 |
 
-Pretrained model weights are available [here](https://git.litislab.fr/dcoquenet/VerticalAttentionNetwork).
+Pretrained model weights are available [here](https://git.litislab.fr/dcoquenet/VerticalAttentionNetwork) and [here](https://zenodo.org/record/7244431).
 
 Table of contents:
 1. [Getting Started](#Getting-Started)
