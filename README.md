@@ -166,11 +166,14 @@ Evaluation is performed just after training ending (training is stopped when the
 ## Citation
 
 ```bibtex
-@ARTICLE{Coquenet2022,
+@ARTICLE{Coquenet2023a,
     author={Coquenet, Denis and Chatelain, Clement and Paquet, Thierry},
     journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
     title={End-to-end Handwritten Paragraph Text Recognition Using a Vertical Attention Network},
-    year={2022},
+    year={2023},
+    volume={45},
+    number={1},
+    pages={508-524},
     doi={10.1109/TPAMI.2022.3144899}
 }
 ```
